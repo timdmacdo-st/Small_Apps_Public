@@ -25,21 +25,27 @@ def calculate(time_hr, cost, hours_available):
 # Streamlit UI
 st.title("Time vs Cost Decision Helper")
 
-st.sidebar.header("Input Parameters")
+col1, col2 = st.columns([1, 2])
 
-# Time input options
-input_type = st.sidebar.radio("Input time in:", ("Minutes", "Hours"))
+with col1:
+    st.header("Input Parameters")
 
-if input_type == "Minutes":
-    time_min = st.sidebar.number_input("Time required (minutes):", min_value=0.0, step=5.0, value=60.0)
-    time_hr = time_min / 60
-else:
-    time_hr = st.sidebar.number_input("Time required (hours):", min_value=0.0, step=0.5, value=1.0)
+    # Time input options
+    input_type = st.radio("Input time in:", ("Minutes", "Hours"))
 
-cost = st.sidebar.number_input("Cost to outsource ($):", min_value=0.0, step=10.0, value=60.0)
-hours_available = st.sidebar.slider("Hours available today:", min_value=0, max_value=16, value=4, step=1)
+    if input_type == "Minutes":
+        time_min = st.number_input("Time required (minutes):", min_value=0.0, step=5.0, value=60.0)
+        time_hr = time_min / 60
+    else:
+        time_hr = st.number_input("Time required (hours):", min_value=0.0, step=0.5, value=1.0)
 
-# Calculation
-if st.sidebar.button("Calculate"):
-    result, decision = calculate(time_hr, cost, hours_available)
-    st.markdown(f"<h2>{result}</h2>", unsafe_allow_html=True)
+    cost = st.number_input("Cost to outsource ($):", min_value=0.0, step=10.0, value=60.0)
+    hours_available = st.slider("Hours available today:", min_value=0, max_value=16, value=4, step=1)
+
+    calculate_button = st.button("Calculate")
+
+with col2:
+    st.header("Result")
+    if 'calculate_button' in locals() and calculate_button:
+        result, decision = calculate(time_hr, cost, hours_available)
+        st.markdown(f"<h2>{result}</h2>", unsafe_allow_html=True)
